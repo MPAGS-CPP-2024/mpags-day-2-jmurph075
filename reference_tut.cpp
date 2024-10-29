@@ -10,17 +10,18 @@ void swap( double& a, double& b)
     a=tmp;
 }
 
+void print(const double& a, const double& b)
+{// here we have const references where the objects are referred to with "&"" 
+//but we specify we don't want to alter them through "const"
+    std::cout << a <<"\t" << b << "\n";
+}
+
 int main()
 {
     double x {42.3};
     double y {11.2};
 
-    std::cout << x << "\t" << y << "\n";
-
+    print(x,y);
     swap(x,y);
-
-    std::cout << x << "\t" << y << "\n";
-    // in this case we first simply print x(42.3) and y(11.2)
-    // then after applying the "swap function" (utilising references) 
-    //we print them again to find the actual objects have been altered!
+    print(x,y); 
 }
