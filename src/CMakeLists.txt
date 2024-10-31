@@ -21,6 +21,7 @@ set(CMAKE_CXX_STANDARD 14)
 add_executable(mpags-cipher 
     mpags-cipher.cpp
     MPAGSCipher/TransformChar.cpp
+    MPAGSCipher/processCommandLine.cpp
     )
 
 target_include_directories(mpags-cipher
