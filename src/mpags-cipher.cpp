@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream> // to handle I-O files
 
 #include "TransformChar.hpp"
 #include "processCommandLine.hpp"
@@ -62,26 +63,51 @@ int main(int argc, char* argv[])
     std::string inputText;
 
     // Read in user input from stdin/file
-    // Warn that input file option not yet implemented
+    //if the inputfile argument is NOT empty
     if (!inputFile.empty()) {
-        std::cerr << "[warning] input from file ('" << inputFile
-                  << "') not implemented yet, using stdin\n";
+        //open the file and attempt to read from it
+        std::ifstream inputStream{inputFile};
+        if (!inputStream.good()){
+            //raise an error if not readable
+            std::cerr << "[error] failed to create istream on file '"
+                      << inputFile << "'" <<std::endl;
+            return 1;
+        }
+
+        //if readable, loop over each character from the file
+        // pass it to the transform char function
+        while (inputStream >> inputChar){
+            inputText += transformChar(inputChar);
+        }
+
+    } else{
+        // if no input file, then we simply loop over character
+        // from user input (until Ctrl-D pressed).
+        while (std::cin >> inputChar){
+            inputText += transformChar(inputChar);
+        }
     }
 
-    // loop over each character from user input (read it now into the function we've defined)
-    while (std::cin >> inputChar){
-        inputText += transformChar(inputChar);
-    }
-
-    // Print out the transliterated text
+    //Output the transliterated text to stdout/file
 
     // Warn that output file option not yet implemented
     if (!outputFile.empty()) {
-        std::cerr << "[warning] output to file ('" << outputFile
-                  << "') not implemented yet, using stdout\n";
+        //open the output file and check that we can write to it
+        std::ofstream outputStream{outputFile};
+        if (!outputStream.good()){
+            //raise an error if not writable
+            std::cerr << "[error] failed to create ostream on file '"
+                      << outputFile << "'" <<std::endl;
+            return 1;
+        }
+        
+        //if writable, print the transliterated text to the file
+        outputStream << inputText << std::endl;
+    
+    } else{
+        //if no output file provided, just print the transliterated text to the screen
+        std::cout << inputText << std::endl;
     }
-
-    std::cout << inputText << std::endl;
 
     // No requirement to return from main, but we do so for clarity
     // and for consistency with other functions
